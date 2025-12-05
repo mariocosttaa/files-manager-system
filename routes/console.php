@@ -1,8 +1,14 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
+use App\Models\File;
+use Illuminate\Support\Facades\Storage;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+Schedule::call(function () {
+    $expiredFiles = File::where('expires_at', '<', now())->get();
+    
+    foreach ($expiredFiles as $file) {
+        Storage::disk('public')->delete($file->path);
+        $file->delete();
+    }
+})->hourly();
