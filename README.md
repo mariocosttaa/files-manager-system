@@ -21,6 +21,16 @@
 
 </div>
 
+## 🎬 Project Preview
+
+<div align="center">
+
+![Application Preview](app-presentation.gif)
+
+*Interactive file management interface with drag-and-drop upload, secure sharing, and real-time statistics*
+
+</div>
+
 ---
 
 ## 📖 About
