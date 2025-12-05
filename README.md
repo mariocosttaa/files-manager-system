@@ -13,6 +13,7 @@
 ![Azure](https://img.shields.io/badge/Azure-0078D4?style=for-the-badge&logo=azure-devops&logoColor=white)
 ![Pest](https://img.shields.io/badge/Pest-FF6B6B?style=for-the-badge&logo=pest&logoColor=white)
 ![Blade](https://img.shields.io/badge/Blade-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
 **A secure, production-ready file management system with cloud storage support**
 
@@ -102,7 +103,7 @@ This application allows users to:
 | Technology | Version | Purpose |
 |------------|---------|---------|
 | ![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=flat-square&logo=laravel&logoColor=white) | 12.x | PHP Framework |
-| ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat-square&logo=php&logoColor=white) | 8.2+ | Programming Language |
+| ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat-square&logo=php&logoColor=white) | 8.3+ | Programming Language |
 | ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white) | Latest | Database (switchable to MySQL/PostgreSQL) |
 | ![Pest](https://img.shields.io/badge/Pest-FF6B6B?style=flat-square&logo=pest&logoColor=white) | 4.x | Testing Framework |
 | ![Laravel Breeze](https://img.shields.io/badge/Breeze-FF2D20?style=flat-square&logo=laravel&logoColor=white) | 2.x | Authentication Scaffolding |
@@ -132,7 +133,10 @@ This application allows users to:
 |------|---------|
 | ![Laravel Pint](https://img.shields.io/badge/Pint-FF2D20?style=flat-square&logo=laravel&logoColor=white) | Code Style Fixer |
 | ![Laravel Pail](https://img.shields.io/badge/Pail-FF2D20?style=flat-square&logo=laravel&logoColor=white) | Log Viewer |
-| ![Laravel Sail](https://img.shields.io/badge/Sail-FF2D20?style=flat-square&logo=laravel&logoColor=white) | Docker Environment |
+| ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white) | Container Platform |
+| ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white) | Database |
+| ![Nginx](https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=white) | Web Server |
+| ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white) | Optional Cache & Sessions |
 | ![Composer](https://img.shields.io/badge/Composer-885630?style=flat-square&logo=composer&logoColor=white) | PHP Dependency Manager |
 | ![NPM](https://img.shields.io/badge/NPM-CB3837?style=flat-square&logo=npm&logoColor=white) | Node Package Manager |
 
@@ -140,7 +144,12 @@ This application allows users to:
 
 ## 📋 Requirements
 
-- **PHP** >= 8.2
+### For Docker Installation
+- **Docker** >= 20.10
+- **Docker Compose** >= 2.0
+
+### For Local Installation
+- **PHP** >= 8.3
 - **Composer** >= 2.0
 - **Node.js** >= 18.0
 - **NPM** >= 9.0 or **Yarn** >= 1.22
@@ -152,106 +161,115 @@ This application allows users to:
 
 ---
 
-## 🚀 Installation
+## 🚀 Quick Start
 
-### Quick Start
+### 🐳 With Docker (Recommended)
+
+The fastest way to get started:
 
 ```bash
 # 1. Clone the repository
 git clone <repository-url>
 cd laravel-files-manager-system
 
-# 2. Install dependencies
+# 2. Copy environment file
+cp .env.example .env
+
+# 3. Start development environment
+docker-compose -f docker-compose.dev.yml up -d --build
+
+# 4. Access the application
+# http://localhost:8000
+```
+
+**That's it!** The application will automatically:
+- ✅ Install PHP and Node dependencies
+- ✅ Run database migrations
+- ✅ Start Vite dev server with hot reload
+- ✅ Configure Nginx and PHP-FPM
+
+**Docker Services:**
+- 🐘 **MySQL 8.0** - Database (port 3306)
+- 🌐 **Nginx + PHP-FPM** - Web Server (port 8000)
+- ⚡ **Vite Dev Server** - Frontend assets (port 5173)
+
+**Useful Docker Commands:**
+```bash
+# Start services
+docker-compose -f docker-compose.dev.yml up -d
+
+# Stop services
+docker-compose -f docker-compose.dev.yml down
+
+# View logs
+docker-compose -f docker-compose.dev.yml logs -f app
+
+# Access container shell
+docker-compose -f docker-compose.dev.yml exec app sh
+
+# Run artisan commands
+docker-compose -f docker-compose.dev.yml exec app php artisan migrate
+docker-compose -f docker-compose.dev.yml exec app php artisan tinker
+
+# Rebuild containers
+docker-compose -f docker-compose.dev.yml up -d --build
+
+# Stop and remove everything (including volumes)
+docker-compose -f docker-compose.dev.yml down -v
+```
+
+### 💻 Without Docker (Local Installation)
+
+If you prefer to run the application locally without Docker:
+
+```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd laravel-files-manager-system
+
+# 2. Install PHP dependencies
 composer install
+
+# 3. Install Node dependencies
 npm install
 
-# 3. Setup environment
+# 4. Setup environment
 cp .env.example .env
 php artisan key:generate
 
-# 4. Setup database
+# 5. Configure database in .env
+# Edit .env and set your database credentials
+
+# 6. Run migrations
 php artisan migrate
 
-# 5. Create storage link
+# 7. Create storage link
 php artisan storage:link
 
-# 6. Build assets
+# 8. Build frontend assets
 npm run build
 
-# 7. Start server
+# 9. Start development server
 php artisan serve
 ```
 
-Visit `http://localhost:8000` in your browser.
+**Access the application:** `http://localhost:8000`
 
-### Detailed Installation
-
-#### 1. Clone the Repository
-
+**For development with hot reload:**
 ```bash
-git clone <repository-url>
-cd laravel-files-manager-system
-```
+# Terminal 1: Start Laravel server
+php artisan serve
 
-#### 2. Install PHP Dependencies
-
-```bash
-composer install
-```
-
-#### 3. Install Node Dependencies
-
-```bash
-npm install
-# or
-yarn install
-```
-
-#### 4. Environment Configuration
-
-```bash
-# Copy environment file
-cp .env.example .env
-
-# Generate application key
-php artisan key:generate
-```
-
-#### 5. Database Setup
-
-```bash
-# Run migrations
-php artisan migrate
-
-# (Optional) Run seeders for sample data
-php artisan db:seed
-```
-
-#### 6. Storage Link (for local storage)
-
-```bash
-php artisan storage:link
-```
-
-This creates a symbolic link from `public/storage` to `storage/app/public`.
-
-#### 7. Build Frontend Assets
-
-```bash
-# Production build
-npm run build
-
-# Development mode (with hot reload)
+# Terminal 2: Start Vite dev server
 npm run dev
 ```
 
-#### 8. Start Development Server
-
-```bash
-php artisan serve
-```
-
-The application will be available at `http://localhost:8000`.
+**Requirements:**
+- PHP >= 8.3
+- Composer >= 2.0
+- Node.js >= 18.0
+- NPM >= 9.0
+- MySQL/PostgreSQL/SQLite
 
 ---
 
@@ -495,6 +513,7 @@ Comprehensive documentation is available in the `docs/` folder:
 - **[STORAGE.md](docs/STORAGE.md)** - Complete storage configuration guide (local & cloud)
 - **[TESTING.md](docs/TESTING.md)** - Testing guide and best practices
 - **[API.md](docs/API.md)** - API endpoints documentation
+- **[DEPLOY.md](docs/DEPLOY.md)** - Complete production deployment guide
 
 ---
 
@@ -560,6 +579,44 @@ Comprehensive documentation is available in the `docs/` folder:
 
 ## 🚀 Deployment
 
+For complete deployment instructions, see **[docs/DEPLOY.md](docs/DEPLOY.md)**.
+
+### Quick Deployment Options
+
+#### Docker Production
+
+```bash
+# 1. Configure .env with production values
+cp .env.example .env
+nano .env
+
+# 2. Start production containers
+docker-compose up -d --build
+
+# 3. Verify deployment
+docker-compose ps
+```
+
+#### Traditional Server
+
+```bash
+# 1. Install dependencies
+composer install --no-dev --optimize-autoloader
+npm install && npm run build
+
+# 2. Configure environment
+cp .env.example .env
+php artisan key:generate
+
+# 3. Run migrations
+php artisan migrate --force
+
+# 4. Optimize
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
 ### Production Checklist
 
 - [ ] Set `APP_ENV=production` in `.env`
@@ -567,7 +624,7 @@ Comprehensive documentation is available in the `docs/` folder:
 - [ ] Configure production database (MySQL/PostgreSQL)
 - [ ] Configure cloud storage (recommended)
 - [ ] Set up SSL certificate
-- [ ] Configure queue workers
+- [ ] Configure queue workers (if needed)
 - [ ] Set up backup strategy
 - [ ] Configure monitoring and logging
 - [ ] Set up error tracking (Sentry, etc.)
@@ -575,40 +632,7 @@ Comprehensive documentation is available in the `docs/` folder:
 - [ ] Run migrations (`php artisan migrate --force`)
 - [ ] Clear and cache config (`php artisan config:cache`)
 
-### Environment Variables for Production
-
-```env
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://your-domain.com
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_DATABASE=your_database
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
-
-FILE_STORAGE_DISK=s3  # or your preferred cloud storage
-
-# AWS S3 Configuration (if using S3)
-AWS_ACCESS_KEY_ID=your-key
-AWS_SECRET_ACCESS_KEY=your-secret
-AWS_DEFAULT_REGION=us-east-1
-AWS_BUCKET=your-bucket
-```
-
-### Deployment Steps
-
-1. **Clone repository** on production server
-2. **Install dependencies**: `composer install --no-dev --optimize-autoloader`
-3. **Install Node dependencies**: `npm install`
-4. **Build assets**: `npm run build`
-5. **Configure environment**: Copy `.env.example` to `.env` and configure
-6. **Generate key**: `php artisan key:generate`
-7. **Run migrations**: `php artisan migrate --force`
-8. **Create storage link**: `php artisan storage:link`
-9. **Cache configuration**: `php artisan config:cache`
-10. **Set permissions**: Ensure storage and cache directories are writable
+**For detailed deployment instructions, see [docs/DEPLOY.md](docs/DEPLOY.md)**
 
 ---
 
