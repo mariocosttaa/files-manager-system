@@ -1,0 +1,63 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: laravel-files-manager-app-dev
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - laravel-network
+    depends_on:
+      - db
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_NAME="${APP_NAME:-Secure File Sharing}"
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE:-laravel}
+      - DB_USERNAME=${DB_USERNAME:-laravel}
+      - DB_PASSWORD=${DB_PASSWORD:-laravel}
+    ports:
+      - "${APP_PORT:-8000}:80"
+      - "5173:5173"
+    command: >
+      sh -c "composer install &&
+             php artisan key:generate --force &&
+             php artisan config:clear &&
+             until php artisan migrate --force; do
+               echo 'Waiting for database...';
+               sleep 2;
+             done &&
+             npm install &&
+             npm run dev &
+             sleep 3 &&
+             /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"
+
+  db:
+    image: mysql:8.0
+    container_name: laravel-files-manager-db-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-laravel}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-laravel}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-laravel}
+      MYSQL_USER: ${DB_USERNAME:-laravel}
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    networks:
+      - laravel-network
+
+volumes:
+  dbdata:
+    driver: local
+
+networks:
+  laravel-network:
+    driver: bridge
