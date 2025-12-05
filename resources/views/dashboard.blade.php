@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout title="Dashboard">
     <x-slot name="header">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
